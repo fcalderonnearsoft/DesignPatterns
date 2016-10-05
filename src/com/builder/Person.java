@@ -82,6 +82,6 @@ public class Person {
 
     @Override
     public String toString() {
-        return "Name=" + this.firstName + "   Lastname=" + this.lastName + "    Email=" + this.email;
+        return "Name=" + this.firstName + "   Lastname=" + this.lastName + "    Email=" + this.email + "   Address=" + this.address + "   Phone=" + this.phone;
     }
 }
