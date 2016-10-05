@@ -90,8 +90,9 @@ public class AdapterPatternTest {
 ```
 
 4. Verás una salida como esta:
-``` v3 volts usando la clase adaptador=3
-    v12 volts usando la clase adaptado=12
-    v120 volts usando la clase adaptado=120
-    ```
+```
+v3 volts usando la clase adaptador=3
+v12 volts usando la clase adaptado=12
+v120 volts usando la clase adaptado=120
+```
 
