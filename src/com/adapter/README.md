@@ -1,8 +1,11 @@
 #Adapter example
 
-Haremos lo siguiente:
+Un buen ejemplo de Adapter es un cargador de celular. Los cargadores de celular necesitan 3V, pero los tomacorriente normales producen 120V.
+Asi que el cargador de celular funciona como un adaptador entre el socket del celular y el tomacorriente de la pared.
 
-1. Crearemos una clase llamada `Person` con las siguientes propiedades y metodos.
+Asi que, haremos lo siguiente:
+
+1. Crearemos 2 clases, `Volt` (para medir los volts) y `Socket` (tomacorriente, produciendo 120V)
 ```
 public class Volt {
 
@@ -24,12 +27,6 @@ public class Volt {
 ```
 
 
-2. Vamos a crear una clase estática anidada (será la clase Builder).
-  1. Vamos a seguir las convenciones de nombres, asi que si el nombre de nuestra clase es `Person` la clase Builder se llamará `PersonBuilder`.
-  2. La clase builder deberá tener un constructor público.
-  3. La clase builder deberá tener metodos para definir las propiedades del objeto y `retornar la clase builder`.
-  4. El paso final sera definir un método `build()` en la clase builder que retornará el objeto que el programa necesita. Para esto necesitaremos un constructor privado en la clase `Person` recibiendo un objeto tipo `PersonBuilder`.
-  5. Crearemos un método `toString()` en la clase `Person` para efectos de tests.
 ```
 public class Socket {
 
@@ -39,7 +36,7 @@ public class Socket {
 }
 ```
 
-3. Ahora, crearemos una clase llamada TestBuilder para probar nuestra clase `Person`
+2. Ahora, crearemos una clase `Adaptador` que produzca salidas de 3V, 12V o el default 120V.
 
 ```
 public class SocketAdapterImpl extends Socket{
@@ -65,7 +62,7 @@ public class SocketAdapterImpl extends Socket{
 }
 ```
 
-4. Verás una salida como esta:
+3. Ahora, crearemos una clase para consumir nuestra implementación de adaptador:
 
 ```
 public class AdapterPatternTest {
@@ -76,9 +73,9 @@ public class AdapterPatternTest {
     		Volt v3 = getVolt(sockAdapter,3);
     		Volt v12 = getVolt(sockAdapter,12);
     		Volt v120 = getVolt(sockAdapter,120);
-    		System.out.println("v3 volts using Class Adapter="+v3.getVolts());
-    		System.out.println("v12 volts using Class Adapter="+v12.getVolts());
-    		System.out.println("v120 volts using Class Adapter="+v120.getVolts());
+    		System.out.println("v3 volts usando la clase adaptador="+v3.getVolts());
+    		System.out.println("v12 volts usando la clase adaptado="+v12.getVolts());
+    		System.out.println("v120 volts usando la clase adaptado="+v120.getVolts());
 	}
 
 	private static Volt getVolt(SocketAdapter sockAdapter, int i) {
