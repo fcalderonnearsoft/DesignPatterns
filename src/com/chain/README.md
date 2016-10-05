@@ -1,98 +1,136 @@
 #Chain of responsability example
 
-Un buen ejemplo de Adapter es un cargador de celular. Los cargadores de celular necesitan 3V, pero los tomacorriente normales producen 120V.
-Asi que el cargador de celular funciona como un adaptador entre el socket del celular y el tomacorriente de la pared.
+Un ejemplo de cadena de responsabilidad es un `Cajero automático`. El usuario ingresa la cantidad que desea retirar y la
+maquina dispensa el monto en billetes de $50, $20, $10.
 
 Asi que, haremos lo siguiente:
 
-1. Crearemos 2 clases, `Volt` (para medir los volts) y `Socket` (tomacorriente, produciendo 120V)
+1. Crearemos la clase `Currency` que almacenará el monto que se dispensará
 ```
-public class Volt {
+public class Currency {
 
-	private int volts;
+	private int amount;
 
-	public Volt(int v){
-		this.volts=v;
+	public Currency(int amt){
+		this.amount=amt;
 	}
 
-	public int getVolts() {
-		return volts;
-	}
-
-	public void setVolts(int volts) {
-		this.volts = volts;
-	}
-
-}
-```
-
-
-```
-public class Socket {
-
-	public Volt getVolt(){
-		return new Volt(120);
+	public int getAmount(){
+		return this.amount;
 	}
 }
 ```
+2. Ahora crearemos tres implementaciones para los dispensadores de $50, $20 y $10.
 
-2. Ahora, crearemos una clase `Adaptador` que produzca salidas de 3V, 12V o el default 120V.
-
-```
-public class SocketAdapterImpl extends Socket{
-
-	public Volt get120Volt() {
-		return getVolt();
-	}
-
-	public Volt get12Volt() {
-		Volt v= getVolt();
-		return convertVolt(v,10);
-	}
-
-	public Volt get3Volt() {
-		Volt v= getVolt();
-		return convertVolt(v,40);
-	}
-
-	private Volt convertVolt(Volt v, int i) {
-		return new Volt(v.getVolts()/i);
-	}
-
-}
-```
-
-3. Ahora, crearemos una clase para consumir nuestra implementación de adaptador:
+`FiftyDollarDispenser.java`
 
 ```
-public class AdapterPatternTest {
+public class FiftyDollarDispenser {
 
-	public static void main(String[] args) {
+	private DispenseChain chain;
 
-	SocketAdapter sockAdapter = new SocketAdapterImpl();
-    		Volt v3 = getVolt(sockAdapter,3);
-    		Volt v12 = getVolt(sockAdapter,12);
-    		Volt v120 = getVolt(sockAdapter,120);
-    		System.out.println("v3 volts usando la clase adaptador="+v3.getVolts());
-    		System.out.println("v12 volts usando la clase adaptado="+v12.getVolts());
-    		System.out.println("v120 volts usando la clase adaptado="+v120.getVolts());
+	public void setNextChain(DispenseChain nextChain) {
+		this.chain=nextChain;
 	}
 
-	private static Volt getVolt(SocketAdapter sockAdapter, int i) {
-		switch (i){
-		case 3: return sockAdapter.get3Volt();
-		case 12: return sockAdapter.get12Volt();
-		case 120: return sockAdapter.get120Volt();
-		default: return sockAdapter.get120Volt();
+	public void dispense(Currency cur) {
+		if(cur.getAmount() >= 50){
+			int num = cur.getAmount()/50;
+			int remainder = cur.getAmount() % 50;
+			System.out.println("Dispensing "+num+" 50$ note");
+			if(remainder !=0) this.chain.dispense(new Currency(remainder));
+		}else{
+			this.chain.dispense(cur);
 		}
 	}
 }
 ```
 
-4. Verás una salida como esta:
+`TwentyDollarDispenser.java`
+
 ```
-v3 volts usando la clase adaptador=3
-v12 volts usando la clase adaptado=12
-v120 volts usando la clase adaptado=120
+public class TwentyDollarDispenser implements DispenseChain{
+
+	private DispenseChain chain;
+
+	public void setNextChain(DispenseChain nextChain) {
+		this.chain=nextChain;
+	}
+
+	public void dispense(Currency cur) {
+		if(cur.getAmount() >= 20){
+			int num = cur.getAmount()/20;
+			int remainder = cur.getAmount() % 20;
+			System.out.println("Dispensing "+num+" 20$ note");
+			if(remainder !=0) this.chain.dispense(new Currency(remainder));
+		}else{
+			this.chain.dispense(cur);
+		}
+	}
+
+}
 ```
 
+`TenDollarDispenser.java`
+
+```
+public class TenDollarDispenser implements DispenseChain {
+
+	private DispenseChain chain;
+
+	public void setNextChain(DispenseChain nextChain) {
+		this.chain=nextChain;
+	}
+
+	public void dispense(Currency cur) {
+		if(cur.getAmount() >= 10){
+			int num = cur.getAmount()/10;
+			int remainder = cur.getAmount() % 10;
+			System.out.println("Dispensing "+num+" 10$ note");
+			if(remainder !=0) this.chain.dispense(new Currency(remainder));
+		}else{
+			this.chain.dispense(cur);
+		}
+	}
+
+}
+```
+
+3. Ahora, crearemos la lógica de la cadena. Debemmos de ser muy cuidadosos en este punto.
+
+```
+public class ATMDispenseChain {
+
+	private DispenseChain c1;
+
+	public ATMDispenseChain() {
+		// initialize the chain
+		this.c1 = new Dollar50Dispenser();
+		DispenseChain c2 = new Dollar20Dispenser();
+		DispenseChain c3 = new Dollar10Dispenser();
+
+		// set the chain of responsibility
+		c1.setNextChain(c2);
+		c2.setNextChain(c3);
+	}
+
+	public static void main(String[] args) {
+		ATMDispenseChain atmDispenser = new ATMDispenseChain();
+		while (true) {
+			int amount = 0;
+			System.out.println("Enter amount to dispense");
+			Scanner input = new Scanner(System.in);
+			amount = input.nextInt();
+			if (amount % 10 != 0) {
+				System.out.println("Amount should be in multiple of 10s.");
+			}
+			else {
+			// process the request
+			atmDispenser.c1.dispense(new Currency(amount));
+			}
+		}
+
+	}
+
+}
+```

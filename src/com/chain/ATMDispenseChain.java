@@ -25,10 +25,11 @@ public class ATMDispenseChain {
             amount = input.nextInt();
             if (amount % 10 != 0) {
                 System.out.println("Amount should be in multiple of 10s.");
-                return;
             }
-            // process the request
-            atmDispenser.c1.dispense(new Currency(amount));
+            else {
+                // process the request
+                atmDispenser.c1.dispense(new Currency(amount));
+            }
         }
 
     }
