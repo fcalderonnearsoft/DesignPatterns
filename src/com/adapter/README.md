@@ -4,41 +4,22 @@ Haremos lo siguiente:
 
 1. Crearemos una clase llamada `Person` con las siguientes propiedades y metodos.
 ```
-public class Person {
+public class Volt {
 
-    private String firstName;
-    private String lastName;
-    private String address;
-    private Integer phone;
-    private String email;
+	private int volts;
 
-    public String getFirstName() {
-        return firstName;
-    }
+	public Volt(int v){
+		this.volts=v;
+	}
 
-    public String getLastName() {
-        return lastName;
-    }
+	public int getVolts() {
+		return volts;
+	}
 
-    public String getAddress() {
-        return address;
-    }
+	public void setVolts(int volts) {
+		this.volts = volts;
+	}
 
-    public Integer getPhone() {
-        return phone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public Person(PersonBuilder build) {
-        this.firstName = build.firstName;
-        this.lastName = build.lastName;
-        this.address = build.address;
-        this.phone = build.phone;
-        this.email = build.email;
-    }
 }
 ```
 
@@ -50,109 +31,79 @@ public class Person {
   4. El paso final sera definir un método `build()` en la clase builder que retornará el objeto que el programa necesita. Para esto necesitaremos un constructor privado en la clase `Person` recibiendo un objeto tipo `PersonBuilder`.
   5. Crearemos un método `toString()` en la clase `Person` para efectos de tests.
 ```
-public class Person {
+public class Socket {
 
-    private String firstName;
-    private String lastName;
-    private String address;
-    private Integer phone;
-    private String email;
-
-    public String getFirstName() {
-        return firstName;
-    }
-
-    public String getLastName() {
-        return lastName;
-    }
-
-    public String getAddress() {
-        return address;
-    }
-
-    public Integer getPhone() {
-        return phone;
-    }
-
-    public String getEmail() {
-        return email;
-    }
-
-    public Person(PersonBuilder build) {
-        this.firstName = build.firstName;
-        this.lastName = build.lastName;
-        this.address = build.address;
-        this.phone = build.phone;
-        this.email = build.email;
-    }
-
-    public String toString() {
-        return "Name=" + this.firstName + "   Lastname=" + this.lastName + "    Email=" + this.email + "   Address=" + this.address + "   Phone=" + this.phone;
-    }
-public static class PersonBuilder {
-
-    private String firstName;
-    private String lastName;
-    private String address;
-    private Integer phone;
-    private String email;
-
-    public PersonBuilder(){
-    }
-
-    public PersonBuilder setFirstName(String firstName) {
-        this.firstName = firstName;
-        return this;
-    }
-
-    public PersonBuilder setLastName(String lastName) {
-        this.lastName = lastName;
-        return this;
-    }
-
-    public PersonBuilder setAddress(String address) {
-        this.address = address;
-        return this;
-    }
-
-    public PersonBuilder setPhone(Integer phone) {
-        this.phone = phone;
-        return this;
-    }
-
-    public PersonBuilder setEmail(String email) {
-        this.email = email;
-        return this;
-    }
-
-    public Person build(){
-        return new Person(this);
-    }
-
-  }
-
+	public Volt getVolt(){
+		return new Volt(120);
+	}
 }
 ```
 
 3. Ahora, crearemos una clase llamada TestBuilder para probar nuestra clase `Person`
 
 ```
-public class Main {
-    public static void main(String[] args) {
-        Person person = new Person.PersonBuilder()
-                .setFirstName("Fernando")
-                .setLastName("Calderon")
-                .setAddress("Calle Pinos")
-                .setEmail("fcalderon@nearsoft.com")
-                .setPhone(901923)
-                .build();
+public class SocketClassAdapterImpl extends Socket{
 
-        System.out.println(person);
-    }
+	public Volt get120Volt() {
+		return getVolt();
+	}
+
+	public Volt get12Volt() {
+		Volt v= getVolt();
+		return convertVolt(v,10);
+	}
+
+	public Volt get3Volt() {
+		Volt v= getVolt();
+		return convertVolt(v,40);
+	}
+
+	private Volt convertVolt(Volt v, int i) {
+		return new Volt(v.getVolts()/i);
+	}
+
 }
 ```
 
 4. Verás una salida como esta:
 
-``` Name=Fernando   Lastname=Calderon    Email=fcalderon@nearsoft.com   Address=Calle Pinos   Phone=901923 ```
+```
+public class AdapterPatternTest {
+
+	public static void main(String[] args) {
+
+		testClassAdapter();
+		testObjectAdapter();
+	}
+
+	private static void testObjectAdapter() {
+		SocketAdapter sockAdapter = new SocketObjectAdapterImpl();
+		Volt v3 = getVolt(sockAdapter,3);
+		Volt v12 = getVolt(sockAdapter,12);
+		Volt v120 = getVolt(sockAdapter,120);
+		System.out.println("v3 volts using Object Adapter="+v3.getVolts());
+		System.out.println("v12 volts using Object Adapter="+v12.getVolts());
+		System.out.println("v120 volts using Object Adapter="+v120.getVolts());
+	}
+
+	private static void testClassAdapter() {
+		SocketAdapter sockAdapter = new SocketClassAdapterImpl();
+		Volt v3 = getVolt(sockAdapter,3);
+		Volt v12 = getVolt(sockAdapter,12);
+		Volt v120 = getVolt(sockAdapter,120);
+		System.out.println("v3 volts using Class Adapter="+v3.getVolts());
+		System.out.println("v12 volts using Class Adapter="+v12.getVolts());
+		System.out.println("v120 volts using Class Adapter="+v120.getVolts());
+	}
+
+	private static Volt getVolt(SocketAdapter sockAdapter, int i) {
+		switch (i){
+		case 3: return sockAdapter.get3Volt();
+		case 12: return sockAdapter.get12Volt();
+		case 120: return sockAdapter.get120Volt();
+		default: return sockAdapter.get120Volt();
+		}
+	}
+}
+```
 
