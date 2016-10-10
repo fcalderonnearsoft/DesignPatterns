@@ -6,7 +6,7 @@ maquina dispensa el monto en billetes de $50, $20, $10.
 Asi que, haremos lo siguiente:
 
 1. Crearemos la clase `Currency` que almacenará el monto que se dispensará
-```
+```java
 public class Currency {
 
 	private int amount;
@@ -20,12 +20,24 @@ public class Currency {
 	}
 }
 ```
+
+
+Y tambien crearemos la interfaz `DispenseChain` que implementaran nuestros dispensadores
+
+```java
+public interface DispenseChain {
+    void setNextChain(DispenseChain nextChain);
+
+    void dispense(Currency cur);
+}
+```
+
 2. Ahora crearemos tres implementaciones para los dispensadores de $50, $20 y $10.
 
 `FiftyDollarDispenser.java`
 
-```
-public class FiftyDollarDispenser {
+```java
+public class FiftyDollarDispenser implements DispenseChain {
 
 	private DispenseChain chain;
 
@@ -48,7 +60,7 @@ public class FiftyDollarDispenser {
 
 `TwentyDollarDispenser.java`
 
-```
+```java
 public class TwentyDollarDispenser implements DispenseChain{
 
 	private DispenseChain chain;
@@ -73,7 +85,7 @@ public class TwentyDollarDispenser implements DispenseChain{
 
 `TenDollarDispenser.java`
 
-```
+```java
 public class TenDollarDispenser implements DispenseChain {
 
 	private DispenseChain chain;
@@ -98,7 +110,7 @@ public class TenDollarDispenser implements DispenseChain {
 
 3. Ahora, crearemos la lógica de la cadena. Debemmos de ser muy cuidadosos en este punto.
 
-```
+```java
 public class ATMDispenseChain {
 
 	private DispenseChain c1;
