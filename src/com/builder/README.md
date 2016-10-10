@@ -154,5 +154,5 @@ public class Main {
 
 4. Verás una salida como esta:
 
-```java Name=Fernando   Lastname=Calderon    Email=fcalderon@nearsoft.com   Address=Calle Pinos   Phone=901923 ```
+``` Name=Fernando   Lastname=Calderon    Email=fcalderon@nearsoft.com   Address=Calle Pinos   Phone=901923 ```
 
