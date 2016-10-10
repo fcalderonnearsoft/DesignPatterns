@@ -3,7 +3,7 @@
 Haremos lo siguiente:
 
 1. Crearemos una clase llamada `Person` con las siguientes propiedades y metodos.
-```
+```java
 public class Person {
 
     private String firstName;
@@ -49,7 +49,7 @@ public class Person {
   3. La clase builder deberá tener metodos para definir las propiedades del objeto y `retornar la clase builder`.
   4. El paso final sera definir un método `build()` en la clase builder que retornará el objeto que el programa necesita. Para esto necesitaremos un constructor privado en la clase `Person` recibiendo un objeto tipo `PersonBuilder`.
   5. Crearemos un método `toString()` en la clase `Person` para efectos de tests.
-```
+```java
 public class Person {
 
     private String firstName;
@@ -136,7 +136,7 @@ public static class PersonBuilder {
 
 3. Ahora, crearemos una clase llamada TestBuilder para probar nuestra clase `Person`
 
-```
+```java
 public class Main {
     public static void main(String[] args) {
         Person person = new Person.PersonBuilder()
@@ -154,5 +154,5 @@ public class Main {
 
 4. Verás una salida como esta:
 
-``` Name=Fernando   Lastname=Calderon    Email=fcalderon@nearsoft.com   Address=Calle Pinos   Phone=901923 ```
+```java Name=Fernando   Lastname=Calderon    Email=fcalderon@nearsoft.com   Address=Calle Pinos   Phone=901923 ```
 
