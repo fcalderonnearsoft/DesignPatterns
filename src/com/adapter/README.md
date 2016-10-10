@@ -6,7 +6,7 @@ Asi que el cargador de celular funciona como un adaptador entre el socket del ce
 Asi que, haremos lo siguiente:
 
 1. Crearemos 2 clases, `Volt` (para medir los volts) y `Socket` (tomacorriente, produciendo 120V)
-```
+```java
 public class Volt {
 
 	private int volts;
@@ -27,7 +27,7 @@ public class Volt {
 ```
 
 
-```
+```java
 public class Socket {
 
 	public Volt getVolt(){
@@ -38,7 +38,7 @@ public class Socket {
 
 2. Ahora, crearemos una clase `Adaptador` que produzca salidas de 3V, 12V o el default 120V.
 
-```
+```java
 public class SocketAdapterImpl extends Socket{
 
 	public Volt get120Volt() {
@@ -64,7 +64,7 @@ public class SocketAdapterImpl extends Socket{
 
 3. Ahora, crearemos una clase para consumir nuestra implementación de adaptador:
 
-```
+```java
 public class AdapterPatternTest {
 
 	public static void main(String[] args) {
@@ -90,7 +90,7 @@ public class AdapterPatternTest {
 ```
 
 4. Verás una salida como esta:
-```
+```java
 v3 volts usando la clase adaptador=3
 v12 volts usando la clase adaptado=12
 v120 volts usando la clase adaptado=120
